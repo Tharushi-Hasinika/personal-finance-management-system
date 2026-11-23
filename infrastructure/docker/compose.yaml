@@ -1,0 +1,27 @@
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: pfms-postgres
+
+    environment:
+      POSTGRES_DB: account_service_db
+      POSTGRES_USER: pfms_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+
+    ports:
+      - "127.0.0.1:5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pfms_user -d account_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
